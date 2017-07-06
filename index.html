@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html,
+        svg:not(:root) {
+            overflow: hidden
+        }
+
+        body,
+        html {
+            height: 100%
+        }
+
+        button:focus,
+        input[type=range]:focus {
+            outline: 0
+        }
+
+        .filupp,
+        button {
+            cursor: pointer
+        }
+
+        @font-face {
+            font-family: 'Roboto Mono';
+            src: url(../fonts/roboto-mono-v4-latin-regular.woff2) format('woff2'), url(../fonts/roboto-mono-v4-latin-regular.woff) format('woff');
+            font-weight: 400;
+            font-style: normal
+        }
+
+        html {
+            font-size: 100%;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            box-sizing: border-box
+        }
+
+        *,
+        :after,
+        :before {
+            box-sizing: inherit;
+            padding: 0;
+            margin: 0
+        }
+
+        svg {
+            max-height: 100%;
+            fill: currentColor
+        }
+
+        ::-moz-selection {
+            background: #6c63ff;
+            color: #fff
+        }
+
+        ::selection {
+            background: #6c63ff;
+            color: #fff
+        }
+
+        body {
+            font-family: "Roboto Mono", monospace;
+            font-weight: 400;
+            font-size: 1rem;
+            line-height: 1.5;
+            background: #fcfcfc;
+            color: #4d4d4d;
+            transition: all .3s
+        }
+
+        ul {
+            list-style: none;
+            margin-bottom: 1.5rem
+        }
+
+        li {
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            -ms-flex-align: center;
+            align-items: center
+        }
+
+        .label {
+            width: 50%
+        }
+
+        button {
+            background: #4d4d4d;
+            font-family: inherit;
+            font-size: inherit;
+            color: #fcfcfc;
+            text-transform: uppercase;
+            vertical-align: baseline;
+            line-height: 1;
+            border: transparent;
+            display: inline-block;
+            -webkit-appearance: button;
+            padding: .5rem
+        }
+
+        .icon,
+        button .icon {
+            vertical-align: middle
+        }
+
+        .settings-btn {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            z-index: 3;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f5f8fc' width='24' height='24'><path d='M3 17v2h6v-2h-6zM3 5v2h10v-2h-10zM13 21v-2h8v-2h-8v-2h-2v6h2zM7 9v2h-4v2h4v2h2v-6h-2zM21 13v-2h-10v2h10zM15 9h2v-2h4v-2h-4v-2h-2v6z'/></svg>");
+            background-position: 50% 50%;
+            background-repeat: no-repeat
+        }
+
+        .active {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f5f8fc' width='24' height='24'><path d='M19 6.415l-1.415-1.415-5.585 5.585-5.585-5.585-1.415 1.415 5.585 5.585-5.585 5.585 1.415 1.415 5.585-5.585 5.585 5.585 1.415-1.415-5.585-5.585z'/></svg>")
+        }
+
+        .color-btn {
+            width: 25%;
+            height: 1rem;
+            box-shadow: 0 0 0 1px #4d4d4d
+        }
+
+        .settings {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            width: 22rem;
+            height: 22rem;
+            font-size: .875rem;
+            background: #fcfcfc;
+            padding: 1rem;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(24rem);
+            transition: background .3s, color .3s, transform .3s, opacity 1s
+        }
+
+        .open {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
+            padding: 10vh 1rem
+        }
+
+        .txt {
+            font-size: 1.6em;
+            line-height: 1.5;
+            margin: 0 auto;
+            max-width: 640px
+        }
+
+        .icon {
+            fill: #4d4d4d;
+            width: 1.714em;
+            height: 1.714em
+        }
+
+        button .icon {
+            fill: #fcfcfc
+        }
+
+        input[type=color] {
+            opacity: 0;
+            display: block;
+            border: none
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 50%
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #4d4d4d;
+            border: none
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            border: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #4d4d4d;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -9px
+        }
+
+        input[type=range]:focus::-webkit-slider-runnable-track {
+            background: #4d4d4d
+        }
+
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #4d4d4d;
+            border: none
+        }
+
+        input[type=range]::-moz-range-thumb {
+            border: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #4d4d4d;
+            cursor: pointer
+        }
+
+        input[type=range]::-ms-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: 0 0;
+            border-color: transparent;
+            color: transparent
+        }
+
+        input[type=range]::-ms-fill-lower {
+            background: #4d4d4d;
+            border: none
+        }
+
+        input[type=range]::-ms-fill-upper {
+            background: #4d4d4d;
+            border: none
+        }
+
+        input[type=range]::-ms-thumb {
+            border: none;
+            width: 20px;
+            border-radius: 50%;
+            background: #4d4d4d;
+            cursor: pointer;
+            height: 2px
+        }
+
+        input[type=range]:focus::-ms-fill-lower {
+            background: #4d4d4d
+        }
+
+        input[type=range]:focus::-ms-fill-upper {
+            background: #4d4d4d
+        }
+
+        input[type=file] {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0
+        }
+
+        .filupp {
+            position: relative;
+            background: #4d4d4d;
+            display: block;
+            padding: 1rem .5rem;
+            font-size: 1rem;
+            width: 100%;
+            height: 3.5rem;
+            color: #fcfcfc
+        }
+
+        .filupp:after {
+            content: "";
+            position: absolute;
+            top: .75rem;
+            right: 1rem;
+            width: 2rem;
+            height: 2rem;
+            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f5f8fc'><path d='M9 16h6v-6h4l-7-7-7 7h4zM5 18h14v2h-14z'/></svg>")
+        }
+
+        .filupp-file-name {
+            width: 100%;
+            font-size: 80%;
+            display: inline-block
+        }
+    </style>
+    <title>FontPlay</title>
+    <meta name="title" content="TextPlay">
+    <meta name="description" content="Load local font files and play around with a few text format settings">
+    <meta name="author" content="Reon Saji">
+    <meta property="og:title" content="TextPlay">
+    <meta property="og:description" content="Load local font files and play around with a few text format settings">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://textplay.reonsaji.in">
+    <meta property="og:site_name" content="Reon Saji">
+</head>
+
+<body>
+
+    <button class="settings-btn" id="ts"></button>
+
+    <div class="settings" id="settings">
+        <ul>
+            <li>
+                <label for="ff" class="filupp">
+        <span class="filupp-file-name" id="ffValue">Load Font File</span>
+        <input type="file" id="ff">
+      </label>
+            </li>
+            <li>
+                <div class="label">
+                    <svg viewBox="0 0 24 24" class="icon"><path d="M9 4v3h5v12h3v-12h5v-3h-13zM3 12h3v7h3v-7h3v-3h-9v3z"/></svg>
+                    <span id="fsDisplay"></span>
+                </div>
+                <input type="range" min="0.875" max="8" value="1" id="fs" step="0.025">
+            </li>
+            <li>
+                <div class="label">
+                    <svg viewBox="0 0 24 24" class="icon"><path d="M6 7h2.5l-3.5-3.5-3.5 3.5h2.5v10h-2.5l3.5 3.5 3.5-3.5h-2.5v-10zM10 5v2h12v-2h-12zM10 19h12v-2h-12v2zM10 13h12v-2h-12v2z"/></svg>
+                    <span id="lhDisplay"></span>
+                </div>
+                <input type="range" min="1" max="3.5" value="1.5" id="lh" step="0.1">
+            </li>
+            <li>
+                <div class="label">
+                    <svg viewBox="0 0 24 24" class="icon"><path d="M11.09375,3v18h1.8125v-18h-1.8125zm-10.09375,4v3h3v7h3v-7h3v-3h-9zm13.09375,0v3h3v7h3v-7h3v-3h-9z"/></svg>
+                    <span id="lsDisplay"></span>
+                </div>
+                <input type="range" min="-0.5" max="2" value="0" id="ls" step="0.01">
+            </li>
+            <li>
+                <div class="label">
+                    <svg viewBox="0 0 24 24" class="icon"><path d="M4 19h6v-2h-6v2zM20 5h-16v2h16v-2zM17 11h-13v2h13.25c1.105 0 2 0.895 2 2s-0.895 2-2 2h-2.25v-2l-3 3 3 3v-2h2c2.205 0 4-1.795 4-4s-1.795-4-4-4z"/></svg>
+                    <span id="lwDisplay"></span>
+                </div>
+                <input type="range" min="320" max="1024" value="640" id="lw" step="1">
+            </li>
+            <li>
+                <div class="label"><svg viewBox="0 0 24 24" class="icon"><path d="M16.56 8.94l-8.94-8.94-1.415 1.415 2.38 2.38-5.145 5.145c-0.585 0.585-0.585 1.535 0 2.12l5.5 5.5c0.29 0.295 0.675 0.44 1.060 0.44s0.77-0.145 1.060-0.44l5.5-5.5c0.585-0.585 0.585-1.535 0-2.12zM5.205 10l4.795-4.79 4.795 4.79h-9.59zM19 11.5s-2 2.165-2 3.5c0 1.105 0.895 2 2 2s2-0.895 2-2c0-1.335-2-3.5-2-3.5z"/><path d="M0 20h24v4h-24z"/></svg></div>
+                <div class="color-btn" id="bgBtn"><input type="color" value="#fcfcfc" id="bg"></div>
+                <div class="color-btn" id="tcBtn"><input type="color" value="#4d4d4d" id="tc"></div>
+            </li>
+        </ul>
+        <button id="rs"><svg viewBox="0 0 24 24" class="icon"><path d="M17.65 6.35c-1.445-1.45-3.44-2.35-5.65-2.35-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.725 0 6.845-2.55 7.73-6h-2.080c-0.825 2.33-3.035 4-5.65 4-3.315 0-6-2.685-6-6s2.685-6 6-6c1.655 0 3.14 0.69 4.225 1.775l-3.225 3.225h7v-7l-2.35 2.35z"/></svg> Reset to Defaults</button>
+    </div>
+
+    <div class="panel" id="panel">
+        <div contenteditable="true" spellcheck="false" class="txt" id="txt">
+            This text is editable. Use the icon down below to load a font file and play with a few settings.
+            <br>
+            <br>
+            <br>
+            An experiment built by <a href="https://reonsaji.in">Reon Saji</a>
+            <br>
+            <br>
+            source code on <a href="https://github.com/reonsaji/textplay" target="_blank">Github</a>
+        </div>
+    </div>
+
+    <script>
+        var ts = document.getElementById("ts"),
+            ff = document.getElementById("ff"),
+            ffValue = document.getElementById("ffValue"),
+            fs = document.getElementById("fs"),
+            fsDisplay = document.getElementById("fsDisplay"),
+            lh = document.getElementById("lh"),
+            lhDisplay = document.getElementById("lhDisplay"),
+            ls = document.getElementById("ls"),
+            lsDisplay = document.getElementById("lsDisplay"),
+            lw = document.getElementById("lw"),
+            lwDisplay = document.getElementById("lwDisplay"),
+            bg = document.getElementById("bg"),
+            bgBtn = document.getElementById("bgBtn"),
+            tc = document.getElementById("tc"),
+            tcBtn = document.getElementById("tcBtn"),
+            rs = document.getElementById("rs"),
+            settings = document.getElementById("settings"),
+            panel = document.getElementById("panel"),
+            txt = document.getElementById("txt"),
+            resetAll = function(a) {
+                fs.value = 1.6, lh.value = 1.5, ls.value = 0, lw.value = 640, fsDisplay.innerHTML = "1.6em", lhDisplay.innerHTML = 1.5, lsDisplay.innerHTML = "0em", lwDisplay.innerHTML = "640px", bgBtn.style.backgroundColor = "#fcfcfc", tcBtn.style.backgroundColor = "#4d4d4d", panel.removeAttribute("style"), txt.removeAttribute("style"), ffValue.innerHTML = "Load Font File"
+            },
+            handleFileSelect = function(a) {
+                var b = a.target.files,
+                    c = b[0];
+                if (b && c) {
+                    var d = new FileReader;
+                    ffValue.innerHTML = ff.value;
+                    var e = /(?:\.([^.]+))?$/,
+                        f = e.exec(ff.value)[1];
+                    d.onload = function(a) {
+                        var b = a.target.result,
+                            c = function() {
+                                var a = document.createElement("style");
+                                return a.appendChild(document.createTextNode("")), document.head.appendChild(a), a
+                            }();
+                        "woff" == f && (c.sheet.insertRule("@font-face{font-family: 'userFont'; src:url(data:application/x-font-woff;charset=utf-8;base64," + btoa(b) + ") format('woff');}", 0), txt.style.fontFamily = "userFont"), "woff2" == f && (c.sheet.insertRule("@font-face{font-family: 'userFont'; src:url(data:application/x-font-woff2;charset=utf-8;base64," + btoa(b) + ") format('woff2');}", 0), txt.style.fontFamily = "userFont"), "otf" == f && (c.sheet.insertRule("@font-face{font-family: 'userFont'; src:url(data:application/x-font-opentype;charset=utf-8;base64," + btoa(b) + ") format('opentype');}", 0), txt.style.fontFamily = "userFont"), "ttf" == f && (c.sheet.insertRule("@font-face{font-family: 'userFont'; src:url(data:application/x-font-ttf;charset=utf-8;base64," + btoa(b) + ") format('truetype');}", 0), txt.style.fontFamily = "userFont"), "woff" !== f && "woff2" !== f && "otf" !== f && "ttf" !== f && alert("Sorry! Only .woff, .woff2, .otf and .ttf extensions supported.")
+                    }, d.readAsBinaryString(c)
+                }
+            };
+        document.addEventListener("DOMContentLoaded", function(a) {
+            resetAll(), window.File && window.FileReader && window.FileList && window.Blob ? document.getElementById("ff").addEventListener("change", handleFileSelect, !1) : alert("The File APIs are not fully supported in this browser."), fs.addEventListener("input", function() {
+                val = fs.value, txt.style.fontSize = val + "em", fsDisplay.innerHTML = val + "em"
+            }), lh.addEventListener("input", function() {
+                val = lh.value, txt.style.lineHeight = val, lhDisplay.innerHTML = val
+            }), ls.addEventListener("input", function() {
+                val = ls.value, txt.style.letterSpacing = val + "em", lsDisplay.innerHTML = val + "em"
+            }), lw.addEventListener("input", function() {
+                val = lw.value, txt.style.maxWidth = val + "px", lwDisplay.innerHTML = val + "px"
+            }), bg.addEventListener("input", function() {
+                val = bg.value, panel.style.backgroundColor = val, bgBtn.style.backgroundColor = val
+            }), tc.addEventListener("input", function() {
+                val = tc.value, txt.style.color = val, tcBtn.style.backgroundColor = val
+            }), rs.addEventListener("click", function() {
+                resetAll()
+            }), ts.addEventListener("click", function() {
+                this.classList.toggle("active"), settings.classList.toggle("open")
+            })
+        });
+    </script>
+</body>
+
+</html>
